@@ -168,6 +168,12 @@
     zipInfo.tmz_date.tm_mon = (uInt)components.month;
     zipInfo.tmz_date.tm_year = (uInt)components.year;
     
+	NSNumber *perms = (NSNumber *)[attr objectForKey:NSFilePosixPermissions];
+	if (perms) {
+		// clear out existing permission bits and set new ones
+		zipInfo.external_fa &= ~((S_IRWXU | S_IRWXG | S_IRWXO) << 16L);
+		zipInfo.external_fa |= perms.shortValue << 16L;
+	}
 	
 	int ret ;
 	if( [_password length] == 0 )
